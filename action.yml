@@ -23,6 +23,16 @@ runs:
       with:
         gradle-version: 8.4
 
+    - name: Get latest version
+      if: ${{ inputs.beta == 'true' }}
+      uses: oprypin/find-latest-tag@v1
+      id: latest_tag
+      continue-on-error: true
+      with:
+        repository: ${{ inputs.repository }}
+        releases-only: true
+        prefix: 'beta-'
+
     - uses: actions/checkout@v3
       with:
         repository: fr3qu3ncy-dev/gradle-version-incrementer
