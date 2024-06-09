@@ -33,10 +33,6 @@ runs:
         releases-only: true
         prefix: 'beta-'
 
-    - uses: actions/checkout@v3
-      with:
-        repository: fr3qu3ncy-dev/gradle-version-incrementer
-
     - name: Increment version
       uses: fr3qu3ncy-dev/gradle-version-incrementer@main
       if: ${{ inputs.beta == 'true' }}
@@ -48,8 +44,6 @@ runs:
       if: ${{ inputs.beta == 'true' }}
       shell: bash
       run: echo "new_number=${{ steps.incrementer.outputs.new_number }}" >> $GITHUB_ENV
-
-    - uses: actions/checkout@v3
 
     - name: Build with Gradle
       shell: bash
