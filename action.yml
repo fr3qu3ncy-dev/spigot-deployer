@@ -8,6 +8,12 @@ inputs:
   repository:
     description: 'The repository to check for the latest tag.'
     required: true
+  github_token:
+    description: 'The GitHub token to use for deleting tags and releases.'
+    required: true
+  panel_api_key:
+    description: 'The Pterodactyl API key to use for deploying the plugin.'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -47,7 +53,7 @@ runs:
       continue-on-error: true
       with:
         tag_name: ${{ steps.latest_tag.outputs.tag }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ inputs.github_token }}
     - name: Create Beta Release
       uses: softprops/action-gh-release@v2
       if: ${{ inputs.beta == 'true' }}
@@ -71,8 +77,8 @@ runs:
         delete_tag_pattern: "beta-"
         delete_tags: true
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
     - name: Pterodactyl Deploy
       uses: fr3qu3ncy-dev/pterodactyl-deployer@main
       with:
-        api_key: ${{ secrets.PANEL_API_KEY }}
+        api_key: ${{ inputs.panel_api_key }}
