@@ -40,6 +40,7 @@ runs:
     - name: Increment version
       uses: fr3qu3ncy-dev/gradle-version-incrementer@main
       if: ${{ inputs.beta == 'true' }}
+      id: incrementer
       with:
         latest_release: ${{ steps.latest_tag.outputs.tag }}
 
