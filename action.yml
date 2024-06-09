@@ -53,7 +53,7 @@ runs:
     - name: Build with Gradle (Beta)
       if: ${{ inputs.beta == 'true' }}
       shell: bash
-      run: "gradle -Pversion=${{ env.new_version }}-beta-${{ steps.incrementer.outputs.new_number }} release"
+      run: "./gradlew -Pversion=${{ env.new_version }}-beta-${{ steps.incrementer.outputs.new_number }} release"
 
     - name: Build with Gradle
       if: ${{ inputs.beta == 'false' }}
