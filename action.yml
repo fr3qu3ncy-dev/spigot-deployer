@@ -43,7 +43,7 @@ runs:
       with:
         repository: ${{ inputs.repository }}
         releases-only: true
-        prefix: '${{ steps.incrementer.outputs.new_number }}-beta-'
+        prefix: '${{ env.new_version }}-beta-'
 
     - name: Increment version
       uses: fr3qu3ncy-dev/gradle-version-incrementer@main
