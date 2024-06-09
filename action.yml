@@ -47,7 +47,7 @@ runs:
     - name: Save current version
       if: ${{ inputs.beta == 'true' }}
       shell: bash
-      run: echo "new_number=${{ steps.incrementer.outputs.new_version }}" >> $GITHUB_ENV
+      run: echo "new_number=${{ steps.incrementer.outputs.new_number }}" >> $GITHUB_ENV
 
     - uses: actions/checkout@v3
 
