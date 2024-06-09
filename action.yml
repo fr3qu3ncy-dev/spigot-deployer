@@ -66,7 +66,7 @@ runs:
     - name: Get version
       shell: bash
       run: |
-        echo "version_name=${{steps.android_version.outputs.VERSION_NAME}}" >> $GITHUB_ENV
+        echo "version_name=${{steps.new_version.outputs.VERSION_NAME}}" >> $GITHUB_ENV
 
     - name: Create Beta Release
       uses: softprops/action-gh-release@v2
