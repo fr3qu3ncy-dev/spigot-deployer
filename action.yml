@@ -26,6 +26,13 @@ runs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
 
+    - name: Retrieve Version
+      shell: bash
+      run: |
+        version=$(grep "^version=" gradle.properties | cut -d'=' -f2)
+        echo "new_version=$version" >> $GITHUB_ENV
+        echo "Extracted version: $version"
+
     - name: Get latest version
       if: ${{ inputs.beta == 'true' }}
       uses: oprypin/find-latest-tag@v1
@@ -34,7 +41,7 @@ runs:
       with:
         repository: ${{ inputs.repository }}
         releases-only: true
-        prefix: 'beta-'
+        prefix: '${{ steps.incrementer.outputs.new_number }}-beta-'
 
     - name: Increment version
       uses: fr3qu3ncy-dev/gradle-version-incrementer@main
@@ -42,13 +49,6 @@ runs:
       id: incrementer
       with:
         latest_release: ${{ steps.latest_tag.outputs.tag }}
-
-    - name: Retrieve Version
-      shell: bash
-      run: |
-        version=$(grep "^version=" gradle.properties | cut -d'=' -f2)
-        echo "new_version=$version" >> $GITHUB_ENV
-        echo "Extracted version: $version"
 
     - name: Build with Gradle (Beta)
       if: ${{ inputs.beta == 'true' }}
