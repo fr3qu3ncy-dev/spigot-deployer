@@ -45,21 +45,9 @@ runs:
       with:
         latest_release: ${{ steps.latest_tag.outputs.tag }}
 
-    - name: Save current version
-      if: ${{ inputs.beta == 'true' }}
-      shell: bash
-      run: echo "new_number=${{ steps.incrementer.outputs.new_number }}" >> $GITHUB_ENV
-
     - name: Build with Gradle
       shell: bash
       run: gradle release
-
-    - uses: dev-drprasad/delete-tag-and-release@v1.0
-      if: ${{ inputs.beta == 'true' }}
-      continue-on-error: true
-      with:
-        tag_name: ${{ steps.latest_tag.outputs.tag }}
-        github_token: ${{ inputs.github_token }}
 
     - name: Retrieve Version
       shell: bash
@@ -77,8 +65,8 @@ runs:
       if: ${{ inputs.beta == 'true' }}
       with:
         files: "build/libs/*.jar"
-        tag_name: "beta-${{ env.NEW_NUMBER }}"
-        name: "${{ env.VERSION_NAME }} Beta ${{ env.NEW_NUMBER }}"
+        tag_name: "beta-${{ steps.incrementer.outputs.new_number }}"
+        name: "${{ env.VERSION_NAME }} Beta ${{ steps.incrementer.outputs.new_number }}"
         prerelease: true
 
     - name: Create Release
@@ -89,6 +77,14 @@ runs:
         tag_name: ${{ env.VERSION_NAME }}
         name: ${{ env.VERSION_NAME }}
         prerelease: false
+
+    - name: Remove old releases
+      uses: dev-drprasad/delete-tag-and-release@v1.0
+      if: ${{ inputs.beta == 'true' }}
+      continue-on-error: true
+      with:
+        tag_name: ${{ steps.latest_tag.outputs.tag }}
+        github_token: ${{ inputs.github_token }}
 
     - uses: dev-drprasad/delete-older-releases@v0.2.0
       if: ${{ inputs.beta == 'true' }}
