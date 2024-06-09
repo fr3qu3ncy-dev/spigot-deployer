@@ -53,12 +53,12 @@ runs:
     - name: Build with Gradle (Beta)
       if: ${{ inputs.beta == 'true' }}
       shell: bash
-      run: "./gradlew -Pversion=${{ env.new_version }}-beta-${{ steps.incrementer.outputs.new_number }} release"
+      run: "gradle -Pversion=${{ env.new_version }}-beta-${{ steps.incrementer.outputs.new_number }} release"
 
     - name: Build with Gradle
       if: ${{ inputs.beta == 'false' }}
       shell: bash
-      run: "./gradlew -Pversion=${{ env.new_version }} release"
+      run: "gradle -Pversion=${{ env.new_version }} release"
 
     - name: Create Beta Release
       uses: softprops/action-gh-release@v2
