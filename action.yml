@@ -45,10 +45,6 @@ runs:
       with:
         latest_release: ${{ steps.latest_tag.outputs.tag }}
 
-    - name: Build with Gradle
-      shell: bash
-      run: gradle release
-
     - name: Retrieve Version
       shell: bash
       run: |
@@ -59,6 +55,16 @@ runs:
       shell: bash
       run: |
         echo "version_name=${{steps.new_version.outputs.VERSION_NAME}}" >> $GITHUB_ENV
+
+    - name: Build with Gradle (Beta)
+      if: ${{ inputs.beta == 'true' }}
+      shell: bash
+      run: "gradle -Pversion=${{ env.VERSION_NAME }}-beta-${{ steps.incrementer.outputs.new_number }} release"
+
+    - name: Build with Gradle
+      if: ${{ inputs.beta == 'false' }}
+      shell: bash
+      run: "gradle -Pversion=${{ env.VERSION_NAME }} release"
 
     - name: Create Beta Release
       uses: softprops/action-gh-release@v2
