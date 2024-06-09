@@ -40,9 +40,13 @@ runs:
     - name: Increment version
       uses: fr3qu3ncy-dev/gradle-version-incrementer@main
       if: ${{ inputs.beta == 'true' }}
-      id: incrementer
       with:
         latest_release: ${{ steps.latest_tag.outputs.tag }}
+
+    - name: Save current version
+      if: ${{ inputs.beta == 'true' }}
+      shell: bash
+      run: echo "new_number=${{ steps.incrementer.outputs.new_version }}" >> $GITHUB_ENV
 
     - uses: actions/checkout@v3
 
@@ -73,8 +77,8 @@ runs:
       if: ${{ inputs.beta == 'true' }}
       with:
         files: "build/libs/*.jar"
-        tag_name: "beta-${{ steps.incrementer.outputs.new_version }}"
-        name: "${{ env.VERSION_NAME }} Beta ${{ steps.incrementer.outputs.new_version }}"
+        tag_name: "beta-${{ env.NEW_NUMBER }}"
+        name: "${{ env.VERSION_NAME }} Beta ${{ env.NEW_NUMBER }}"
         prerelease: true
 
     - name: Create Release
